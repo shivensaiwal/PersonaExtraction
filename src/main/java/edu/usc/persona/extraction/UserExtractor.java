@@ -16,7 +16,8 @@ public class UserExtractor {
 		List<String> username = new ArrayList<String>();
 		WebDriver driver = new FirefoxDriver();
 	       driver.get("http://www.hipointfirearmsforums.com/members/");
-
+	       
+	       // XPath to extract href attributes
 	       List<WebElement> list=driver.findElements(By.xpath("//*[contains(@href,'members')]"));
 
 	       for(WebElement e : list){
