@@ -1,4 +1,4 @@
-package edu.usc.persona.extraction;
+package edu.usc.cs.ir;
 
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
@@ -18,6 +18,7 @@ public class UserExtractor {
 	       driver.get("http://www.hipointfirearmsforums.com/members/");
 	       
 	       // XPath to extract href attributes
+	       
 	       List<WebElement> list=driver.findElements(By.xpath("//*[contains(@href,'members')]"));
 
 	       for(WebElement e : list){
@@ -44,6 +45,7 @@ public class UserExtractor {
 	       username.clear();
 	       username.addAll(users);
 	       
+	       System.out.println();
 	       System.out.println("--Username--");
 	       for (int i = 0; i < username.size(); i++) {
 	    	     System.out.println((username.get(i)).toString());
