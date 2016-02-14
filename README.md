@@ -1,2 +1,2 @@
 # PersonaExtraction
-Extraction of user details
+Extraction of user details from weapons dataset.
