@@ -10,7 +10,7 @@ Extraction of user details from weapons dataset.
 1) Jar created at target folder <br/>
 3) Require username and password in config.properties <br/> 
 2) Pass host and solr url as parameter to jar <br/>
-	Example: java -jar personaextraction.jar -h "www.hipointfirearmsforum.com" -s "http://localhost:8983/solr/WeaponsData"
+	Example: java -jar target/PersonaExtraction-0.0.1-SNAPSHOT-jar-with-dependencies.jar -h "www.slickguns.com" -s "http://localhost:8983/solr/WeaponsData"
 
 #Results
 Solr collection created with HTML-Document Id and Usernames
