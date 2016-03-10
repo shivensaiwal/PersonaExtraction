@@ -13,15 +13,17 @@
 */
 
 
-package edu.usc.cs.ir;
+package edu.usc.ir;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Properties;
 import java.util.Map.Entry;
 
 import org.apache.http.conn.HttpHostConnectException;
@@ -39,18 +41,36 @@ import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 
+
 public class UserExtractor {
 
+	
 	private static HashMap<String,ArrayList<String>> map = new HashMap<String,ArrayList<String>>();
 	//public static void main(String[] args) throws FailingHttpStatusCodeException, MalformedURLException, IOException  {
 		
 	@SuppressWarnings("deprecation")
-	public HashMap<String, ArrayList<String>> persons() throws FailingHttpStatusCodeException, MalformedURLException, IOException, SolrServerException {
+	public HashMap<String, ArrayList<String>> persons(String host) throws FailingHttpStatusCodeException, MalformedURLException, IOException, SolrServerException {
 		
+		
+		Properties prop = new Properties();
+	    InputStream input = null;
+	    input = UserExtractor.class.getClassLoader().getResourceAsStream("config.properties");
+
+        // load a properties file
+        prop.load(input);
+
+        // get the property value and print it out
+        String username_server=prop.getProperty("username");
+        String password_server=prop.getProperty("password");
 	
+        String pattern = prop.getProperty(host);
+        String domain = host.split("\\.")[1];
+       // System.out.println(domain[1]);
+        System.out.println(host+username_server+password_server);
+        System.out.println(pattern);
 		WebClient webclient = new WebClient();
 		DefaultCredentialsProvider provider = new DefaultCredentialsProvider();
-		provider.addCredentials("darpamemex", "darpamemex");
+		provider.addCredentials(username_server, password_server);
 		webclient.setCredentialsProvider(provider);
 		
 		webclient.getOptions().setJavaScriptEnabled(false);
@@ -63,13 +83,13 @@ public class UserExtractor {
 		String urlString = "http://imagecat.dyndns.org/solr/imagecatdev";
 		HttpSolrServer server = new HttpSolrServer(urlString);
 		
-		HttpClientUtil.setBasicAuth((DefaultHttpClient) server.getHttpClient(), "darpamemex", "darpamemex");
+		HttpClientUtil.setBasicAuth((DefaultHttpClient) server.getHttpClient(), username_server, password_server);
 		
 		SolrQuery query = new SolrQuery();
-		query.setQuery("host:www.hipointfirearmsforums.com");
+		query.setQuery("host:"+host);
 		query.set("fl", "id,persons");
 		query.setStart(0);
-		query.setRows(36000);
+		query.setRows(10);
 		QueryResponse response = server.query(query);
 		//System.out.println(response);
 		SolrDocumentList docResults = response.getResults();
@@ -92,7 +112,7 @@ public class UserExtractor {
 		}
 		
 		
-		String []data = {"BAAEF51BAD5A08AD569898904D1EB08BFC6D40CD62C3B89C87D084C196A60765","62411F292054C945F435ED5C9428007F527CCE10448BD13DCB692F75027C43CF","50054DB31005E33D4DA4DF57F22253A855210B53CC18D77718EF640E39172620","65012DD7B919E2EA79BD135E70708FC108D35C5E275E6A538B46DDE23588A772","1AD65CF085E1C115EE7CA146E3ED51E099F354DB106C99542C57F20EDF92F056"};
+	//	String []data = {"BAAEF51BAD5A08AD569898904D1EB08BFC6D40CD62C3B89C87D084C196A60765","62411F292054C945F435ED5C9428007F527CCE10448BD13DCB692F75027C43CF","50054DB31005E33D4DA4DF57F22253A855210B53CC18D77718EF640E39172620","65012DD7B919E2EA79BD135E70708FC108D35C5E275E6A538B46DDE23588A772","1AD65CF085E1C115EE7CA146E3ED51E099F354DB106C99542C57F20EDF92F056"};
 		
 		
 		
@@ -106,14 +126,15 @@ public class UserExtractor {
 			ArrayList<String> username = new ArrayList<String>();
 		
 		//htmldocs.remove(0);
-		String url = "http://imagecat.dyndns.org/weapons/alldata/com/hipointfirearmsforums/www/"+htmldocs.get(j);
+		String url = "http://imagecat.dyndns.org/weapons/alldata/com/"+domain+"/www/"+htmldocs.get(j);
 		System.out.println(j+"\t"+url);
 		HtmlPage htmlPage = webclient.getPage(url);
 		
 		
 		@SuppressWarnings("unchecked")
 		
-		List<HtmlAnchor> anchor = (List<HtmlAnchor>) htmlPage.getByXPath("//*[contains(@href,'members')]");
+	//	List<HtmlAnchor> anchor = (List<HtmlAnchor>) htmlPage.getByXPath("//*[contains(@href,'members')]");
+		List<HtmlAnchor> anchor = (List<HtmlAnchor>) htmlPage.getByXPath(pattern);
 		//List<HtmlAnchor> anchor = (List<HtmlAnchor>) htmlPage.getByXPath("//')]");
 		for(int i=0;i<anchor.size();i++)
 		{
@@ -121,6 +142,10 @@ public class UserExtractor {
 		//	System.out.println(anchor.get(i).getHrefAttribute());
 			String link = anchor.get(i).getHrefAttribute();
 			if(link.toLowerCase().contains("php"))
+			{
+				continue;
+			}
+			else if(link.toLowerCase().contains("?"))
 			{
 				continue;
 			}

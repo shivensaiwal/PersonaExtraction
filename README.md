@@ -1,10 +1,21 @@
 # PersonaExtraction
 Extraction of user details from weapons dataset.
 
-# Execution Details
+#Build Details
 1) Create Solr Collection and add field "id" and "persons" <br/>
-2) Change solr core name inside SolrUserData.java <br/>
-3) Passing number of rows in UserExtractor.java <br/>
+2) git clone https://github.com/shivensaiwal/PersonaExtraction.git <br/>
+3) mvn assembly:assembly
+
+# Execution Details
+1) Jar created at target folder <br/>
+3) Require username and password in config.properties <br/> 
+2) Pass host and solr url as parameter to jar <br/>
+	Example: java -jar personaextraction.jar -h "www.hipointfirearmsforum.com" -s "http://localhost:8983/solr/WeaponsData"
 
 #Results
 Solr collection created with HTML-Document Id and Usernames
+
+#Note
+Working for hostnames
+1) www.hipointfirearmsforums.com
+2) www.slickguns.com
