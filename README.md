@@ -16,6 +16,6 @@ Extraction of user details from weapons dataset.
 Solr collection created with HTML-Document Id and Usernames
 
 #Note
-Working for hostnames
-1) www.hipointfirearmsforums.com
+Working for hostnames <br/>
+1) www.hipointfirearmsforums.com <br/>
 2) www.slickguns.com
